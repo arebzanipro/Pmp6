@@ -1,12 +1,11 @@
 package fr.pmp6.message.pmp6;
 
 import android.content.Intent;
-import android.icu.text.DateFormat;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +21,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-import junit.framework.Test;
+import java.security.GeneralSecurityException;
+
+import fr.pmp6.message.pmp6.fr.pmp6.message.utils.AESCrypt;
 
 public class MainActivity extends AppCompatActivity {
     private int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
+    private static final String pass = "HELLO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +49,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 EditText input = (EditText) findViewById(R.id.input);
+                String encryptedMessage = null;
+                try {
 
+                    encryptedMessage = AESCrypt.encrypt(String.valueOf(R.string.aes_pass),input.getText().toString());
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                }
+                Log.e("TEST", encryptedMessage);
                 FirebaseDatabase.getInstance()
                         .getReference()
                         .push().setValue(new ChatMessage(
-                                input.getText().toString(),
+                        encryptedMessage,
+                        //input.getText().toString(),
                         FirebaseAuth.getInstance()
                         .getCurrentUser()
                         .getDisplayName())
@@ -71,7 +81,15 @@ public class MainActivity extends AppCompatActivity {
                 TextView messageText = (TextView) v.findViewById(R.id.message_text);
                 TextView messageUser = (TextView) v.findViewById(R.id.message_user);
                 TextView messageTime = (TextView) v.findViewById(R.id.message_time);
-                messageText.setText(model.getMessageText());
+                String decryptedMessage = null;
+                try {
+                    decryptedMessage = AESCrypt.decrypt(String.valueOf(R.string.aes_pass),model.getMessageText());
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                }
+
+                messageText.setText(decryptedMessage);
+                //messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUSer());
                 messageTime.setText(android.text.format.DateFormat.format("dd-MM-yyy (HH:mm:ss)",
                         model.getMessageTime())
