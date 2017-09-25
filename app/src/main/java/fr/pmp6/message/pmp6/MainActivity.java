@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
                         .getDisplayName())
                 );
                 input.setText("");
-
             }
         });
 
@@ -77,13 +76,9 @@ public class MainActivity extends AppCompatActivity {
                 messageTime.setText(android.text.format.DateFormat.format("dd-MM-yyy (HH:mm:ss)",
                         model.getMessageTime())
                 );
-
-
             }
         };
-
         listOfMessages.setAdapter(adapter);
-        listOfMessages.smoothScrollToPosition(listOfMessages.getBottom());
     }
 
     @Override
