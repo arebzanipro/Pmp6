@@ -1,5 +1,6 @@
 package fr.pmp6.message.pmp6;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +26,7 @@ import java.security.GeneralSecurityException;
 
 import fr.pmp6.message.pmp6.fr.pmp6.message.utils.AESCrypt;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     private int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
     private static final String pass = "HELLO";
